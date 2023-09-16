@@ -192,3 +192,38 @@ db.open()
   })
 ```
 We are receiving an asynchronous result in line A. In line B, we are nesting so that we have access to variable connection inside the callback and in line C.
+
+
+- Chaining mistake: creating Promises instead of chaining 
+Problem:
+```
+// Don’t do this
+class Model {
+  insertInto(db) {
+    return new Promise((resolve, reject) => { // (A)
+      db.insert(this.fields)
+        .then(resultCode => {
+          this.notifyObservers({event: 'created', model: this});
+          resolve(resultCode);
+        }).catch(err => {
+          reject(err);
+        })
+    });
+  }
+  // ···
+}
+```
+In line A, we are creating a Promise to deliver the result of db.insert(). That is unnecessarily verbose and can be simplified:
+```
+class Model {
+  insertInto(db) {
+    return db.insert(this.fields)
+      .then(resultCode => {
+        this.notifyObservers({event: 'created', model: this});
+        return resultCode;
+      });
+  }
+  // ···
+}
+```
+The key idea is that we don’t need to create a Promise; we can return the result of the .then() call. An additional benefit is that we don’t need to catch and re-reject the failure of db.insert(). We simply pass its rejection on to the caller of .insertInto().
