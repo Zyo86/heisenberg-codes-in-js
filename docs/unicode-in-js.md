@@ -95,3 +95,9 @@ A	0x0041	01000001
 π	0x03C0	11001111, 10000000
 🙂	0x1F642	11110000, 10011111, 10011001, 10000010
 
+
+## Encodings used in web development: UTF-16 and UTF-8 #
+The Unicode encoding formats that are used in web development are: UTF-16 and UTF-8.
+
+Source code internally: UTF-16 
+The ECMAScript specification internally represents source code as UTF-16.
