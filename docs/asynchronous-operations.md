@@ -90,12 +90,39 @@ console.log('END');
 // '.then()'
 ```
 
+## Short-circuiting (advanced)
 
-
-## Short-circuiting (advanced)
 For a Promise combinator, short-circuiting means that the output Promise is settled early – before all input Promises are settled. The following combinators short-circuit:
 
 - Promise.all(): The output Promise is rejected as soon as one input Promise is rejected.
 - Promise.race(): The output Promise is settled as soon as one input Promise is settled.
 - Promise.any(): The output Promise is fulfilled as soon as one input Promise is fulfilled.
 Once again, settling early does not mean that the operations behind the ignored Promises are stopped. It just means that their settlements are ignored.
+
+
+## Tips for chaining Promises 
+
+- Chaining mistake: losing the tail 
+Problem:
+```
+// Don’t do this
+function foo() {
+  const promise = asyncFunc();
+  promise.then(result => {
+    // ···
+  });
+
+  return promise;
+}
+```
+
+Computation starts with the Promise returned by asyncFunc(). But afterward, computation continues and another Promise is created via .then(). foo() returns the former Promise, but should return the latter. This is how to fix it:
+
+```
+function foo() {
+  const promise = asyncFunc();
+  return promise.then(result => {
+    //···
+  });
+}
+```
