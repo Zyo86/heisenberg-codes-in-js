@@ -174,3 +174,21 @@ asyncFunc1()
     return 'Result: ' + resultAB;
   });
 ```
+
+- Not all nesting is bad 
+In the following code, we actually benefit from nesting:
+```
+db.open()
+  .then(connection => { // (A)
+    return connection.select({ name: 'Jane' })
+      .then(result => { // (B)
+        // Process result
+        // Use `connection` to make more queries
+      })
+      // ···
+      .finally(() => {
+        connection.close(); // (C)
+      });
+  })
+```
+We are receiving an asynchronous result in line A. In line B, we are nesting so that we have access to variable connection inside the callback and in line C.
