@@ -59,3 +59,41 @@ function asyncFunc() {
     });
 }
 ```
+
+## Promise-based functions start synchronously, settle asynchronously 
+Most Promise-based functions are executed as follows:
+
+- Their execution starts right away, synchronously (in the current task).
+- But the Promise they return is guaranteed to be settled asynchronously (in a later task) – if ever.
+
+```
+function asyncFunc() {
+  console.log('asyncFunc');
+  return new Promise(
+    (resolve, _reject) => {
+      console.log('new Promise()');
+      resolve();
+    });
+}
+console.log('START');
+asyncFunc()
+  .then(() => {
+    console.log('.then()'); // (A)
+  });
+console.log('END');
+
+// Output:
+// 'START'
+// 'asyncFunc'
+// 'new Promise()'
+// 'END'
+// '.then()'
+```
+
+## Short-circuiting (advanced)
+For a Promise combinator, short-circuiting means that the output Promise is settled early – before all input Promises are settled. The following combinators short-circuit:
+
+- Promise.all(): The output Promise is rejected as soon as one input Promise is rejected.
+- Promise.race(): The output Promise is settled as soon as one input Promise is settled.
+- Promise.any(): The output Promise is fulfilled as soon as one input Promise is fulfilled.
+Once again, settling early does not mean that the operations behind the ignored Promises are stopped. It just means that their settlements are ignored.
