@@ -126,3 +126,51 @@ function foo() {
   });
 }
 ```
+
+- Chaining mistake: nesting 
+Problem:
+```
+// Don’t do this
+asyncFunc1()
+  .then(result1 => {
+    return asyncFunc2()
+    .then(result2 => { // (A)
+      // ···
+    });
+  });
+```
+The .then() in line A is nested. A flat structure would be better:
+```
+asyncFunc1()
+  .then(result1 => {
+    return asyncFunc2();
+  })
+  .then(result2 => {
+    // ···
+  });
+```
+- Chaining mistake: more nesting than necessary 
+This is another example of avoidable nesting:
+```
+// Don’t do this
+asyncFunc1()
+  .then(result1 => {
+    if (result1 < 0) {
+      return asyncFuncA()
+      .then(resultA => 'Result: ' + resultA);
+    } else {
+      return asyncFuncB()
+      .then(resultB => 'Result: ' + resultB);
+    }
+  });
+```
+We can once again get a flat structure:
+```
+asyncFunc1()
+  .then(result1 => {
+    return result1 < 0 ? asyncFuncA() : asyncFuncB();
+  })
+  .then(resultAB => {
+    return 'Result: ' + resultAB;
+  });
+```
