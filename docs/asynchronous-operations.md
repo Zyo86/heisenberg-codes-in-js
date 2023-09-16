@@ -1,4 +1,4 @@
-### Error handling: don’t mix rejections and exceptions
+## Error handling: don’t mix rejections and exceptions
 - Don’t mix (asynchronous) rejections and (synchronous) exceptions. This makes our synchronous and asynchronous code more predictable and simpler because we can always focus on a single error-handling mechanism.
 - For Promise-based functions and methods, the rule means that they should never throw exceptions.
 
@@ -89,6 +89,8 @@ console.log('END');
 // 'END'
 // '.then()'
 ```
+
+
 
 ## Short-circuiting (advanced)
 For a Promise combinator, short-circuiting means that the output Promise is settled early – before all input Promises are settled. The following combinators short-circuit:
