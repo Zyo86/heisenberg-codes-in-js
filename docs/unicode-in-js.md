@@ -101,3 +101,28 @@ The Unicode encoding formats that are used in web development are: UTF-16 and UT
 
 Source code internally: UTF-16 
 The ECMAScript specification internally represents source code as UTF-16.
+
+
+## Grapheme clusters – the real characters 
+
+The concept of a character becomes remarkably complex once we consider the various writing systems of the world. That’s why there are several different Unicode terms that all mean “character” in some way: code point, grapheme cluster, glyph, etc.
+
+`In Unicode, a code point is an atomic part of text. It may or may not represent a horizontally segmentable unit of text`
+
+However, `a grapheme cluster corresponds most closely to a symbol displayed on screen or paper. It is defined as “a horizontally segmentable unit of text”. Therefore, official Unicode documents also call it a user-perceived character. One or more code points are needed to encode a grapheme cluster.`
+
+For example, the Devanagari kshi is encoded by 4 code points. We use Array.from() to split a string into an Array with code points
+
+Splitting the grapheme cluster for the Devanagari _kshi_ into code points.
+
+Flag emojis are also grapheme clusters and composed of two code points – for example, the flag of Japan:
+
+Splitting a flag emoji into code points.
+
+## Grapheme clusters vs. glyphs 
+A symbol is an abstract concept and part of written language:
+
+`It is represented in computer memory by a grapheme cluster – a sequence of one or more numbers (code points).`
+`It is drawn on screen via glyphs. A glyph is an image and usually stored in a font. More than one glyph may be used to draw a single symbol – for example, the symbol “é” may be drawn by combining the glyph “e” with the glyph “´”.`
+
+The distinction between a concept and its representation is subtle and can blur when talking about Unicode.
