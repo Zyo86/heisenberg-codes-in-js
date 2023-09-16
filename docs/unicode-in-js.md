@@ -40,4 +40,30 @@ The main ways of encoding code points are three Unicode Transformation Formats (
 
 UTF-32 uses 32 bits to store code units, resulting in one code unit per code point. This format is the only one with fixed-length encoding; all others use a varying number of code units to encode a single code point.
 
-- 
+- UTF-16 (Unicode Transformation Format 16) 
+
+UTF-16 uses 16-bit code units. It encodes code points as follows:
+
+The BMP (first 16 bits of Unicode) is stored in single code units.
+
+Astral planes: The BMP comprises `0x10_000 (65,536) code points (16 bits)`. Given that Unicode has a total of 0x110_000 code points, we still need to encode the remaining `0x100_000 (1,048,576) code points (20 bits)`. The BMP has two ranges of unassigned code points that provide the necessary storage:
+
+`Most significant 10 bits (leading surrogate): 0xD800-0xDBFF, 55296 - 56319`
+`Least significant 10 bits (trailing surrogate): 0xDC00-0xDFFF, 56314 - 57343`
+
+Now, for each of the hex numbers between these range will either start with D8,D9,DA,DB or DC,DD,DE,DF.
+
+In other words, the two hexadecimal digits at the end contribute 8 bits. But we can only use those 8 bits if a BMP starts with one of the following 2-digit pairs:
+
+D8, D9, DA, DB
+DC, DD, DE, DF
+Per surrogate, we have a choice between 4 pairs, which is where the remaining 2 bits come from.` 4 choices means 2 * 2 i.e 2 bits`
+
+`This way, using 2 surrogate pairs we will be able to encode 20 bits long code points from the Astral planes.`
+
+As a consequence, each UTF-16 code unit is always either a leading surrogate, a trailing surrogate, or encodes a BMP code point.
+
+These are two examples of UTF-16-encoded code points:
+
+Code point 0x03C0 (π) is in the BMP and can therefore be represented by a single UTF-16 code unit: 0x03C0.
+Code point 0x1F642 (🙂) is in an astral plane and represented by two code units: 0xD83D and 0xDE42.
