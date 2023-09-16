@@ -36,11 +36,11 @@ The first version of Unicode had 16-bit code points. Since then, the number of c
 
 The main ways of encoding code points are three Unicode Transformation Formats (UTFs): UTF-32, UTF-16, UTF-8. The number at the end of each format indicates the size (in bits) of its code units.
 
-- UTF-32 (Unicode Transformation Format 32) 
+- UTF-32 (Unicode Transformation Format 32) (UCS - 4)
 
 UTF-32 uses 32 bits to store code units, resulting in one code unit per code point. This format is the only one with fixed-length encoding; all others use a varying number of code units to encode a single code point.
 
-- UTF-16 (Unicode Transformation Format 16) 
+- UTF-16 (Unicode Transformation Format 16) (UCS - 2)
 
 UTF-16 uses 16-bit code units. It encodes code points as follows:
 
@@ -67,3 +67,31 @@ These are two examples of UTF-16-encoded code points:
 
 Code point 0x03C0 (π) is in the BMP and can therefore be represented by a single UTF-16 code unit: 0x03C0.
 Code point 0x1F642 (🙂) is in an astral plane and represented by two code units: 0xD83D and 0xDE42.
+
+## How to convert a more than 16 bits code point into surrogate pairs?
+> Will explain later.
+
+- UTF-8 (Unicode Transformation Format 8) 
+
+UTF-8 has 8-bit code units. It uses 1–4 code units to encode a code point:
+
+Code points	Code units
+```
+0000–007F	         0bbbbbbb (7 bits)
+0080–07FF	         110bbbbb, 10bbbbbb (5+6 bits)
+0800–FFFF	         1110bbbb, 10bbbbbb, 10bbbbbb (4+6+6 bits)
+10000–1FFFFF	         11110bbb, 10bbbbbb, 10bbbbbb, 10bbbbbb (3+6+6+6 bits)
+```
+Notes:
+
+The bit prefix of each code unit tells us:
+Is it first in a series of code units? If yes, how many code units will follow?
+Is it second or later in a series of code units?
+The character mappings in the 0000–007F range are the same as ASCII, which leads to a degree of backward compatibility with older software.
+Three examples:
+
+Character	Code point	Code units
+A	0x0041	01000001
+π	0x03C0	11001111, 10000000
+🙂	0x1F642	11110000, 10011111, 10011001, 10000010
+
