@@ -153,3 +153,36 @@ async function sequentialAwait() {
 // 'END second'
 ```
 That is, paused('second') is only started after paused('first') is completely finished.
+
+## await: running asynchronous functions concurrently #
+If we want to run multiple functions concurrently, we can use the tool method Promise.all():
+```
+async function concurrentPromiseAll() {
+  const result = await Promise.all([
+    paused('first'), paused('second')
+  ]);
+  assert.deepEqual(result, ['first', 'second']);
+}
+```
+// Output:
+// 'START first'
+// 'START second'
+// 'END first'
+// 'END second'
+Here, both asynchronous functions are started at the same time. Once both are settled, await gives us either an Array of fulfillment values or – if at least one Promise is rejected – an exception.
+
+What counts is when we start a Promise-based computation; not how we process its result. Therefore, the following code is as “concurrent” as the previous one:
+```
+async function concurrentAwait() {
+  const resultPromise1 = paused('first');
+  const resultPromise2 = paused('second');
+  
+  assert.equal(await resultPromise1, 'first');
+  assert.equal(await resultPromise2, 'second');
+}
+```
+// Output:
+// 'START first'
+// 'START second'
+// 'END first'
+// 'END second'
