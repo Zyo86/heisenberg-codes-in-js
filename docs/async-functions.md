@@ -42,3 +42,21 @@ The difference between the terms asynchronous function and async function is sub
 -  An asynchronous function is any function that delivers its result asynchronously – for example, a callback-based function or a Promise-based function.
 
 -  An async function is defined via special syntax, involving the keywords async and await. It is also called async/await due to these two keywords. Async functions are based on Promises and therefore also asynchronous functions (which is somewhat confusing).
+
+## The following code demonstrates that an async function is started synchronously (line A), then the current task finishes (line C), then the result Promise is settled – asynchronously (line B).
+```
+async function asyncFunc() {
+  console.log('asyncFunc() starts'); // (A)
+  return 'abc';
+}
+asyncFunc().
+then(x => { // (B)
+  console.log(`Resolved: ${x}`);
+});
+console.log('Task ends'); // (C)
+
+// Output:
+// 'asyncFunc() starts'
+// 'Task ends'
+// 'Resolved: abc'
+```
