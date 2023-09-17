@@ -133,3 +133,23 @@ async function downloadContent(urls) {
 }
 ```
 **For the same reason, we can also omit await in line B.**
+
+
+## await: running asynchronous functions sequentially 
+If we prefix the invocations of multiple asynchronous functions with await, then those functions are executed sequentially:
+```
+async function sequentialAwait() {
+  const result1 = await paused('first');
+  assert.equal(result1, 'first');
+  
+  const result2 = await paused('second');
+  assert.equal(result2, 'second');
+}
+
+// Output:
+// 'START first'
+// 'END first'
+// 'START second'
+// 'END second'
+```
+That is, paused('second') is only started after paused('first') is completely finished.
