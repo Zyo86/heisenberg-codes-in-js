@@ -90,3 +90,46 @@ try {
   assert.equal(e instanceof Error, true);
 }
 ```
+
+## IMPORTANT EXAMPLES of await
+> await is shallow (we can’t use it in callbacks) 
+If we are inside an async function and want to pause it via await, we must do so directly within that function; we can’t use it inside a nested function, such as a callback. That is, pausing is shallow.
+
+For example, the following code can’t be executed:
+```
+async function downloadContent(urls) {
+  return urls.map((url) => {
+    return await httpGet(url); // SyntaxError!
+  });
+}
+```
+The reason is that normal arrow functions don’t allow await inside their bodies.
+
+OK, let’s try an async arrow function then:
+```
+async function downloadContent(urls) {
+  return urls.map(async (url) => {
+    return await httpGet(url);
+  });
+}
+```
+Alas, this doesn’t work either: Now .map() (and therefore downloadContent()) returns an Array with Promises, not an Array with (unwrapped) values.
+
+One possible solution is to use Promise.all() to unwrap all Promises:
+```
+async function downloadContent(urls) {
+  const promiseArray = urls.map(async (url) => {
+    return await httpGet(url); // (A)
+  });
+  return await Promise.all(promiseArray);
+}
+```
+Can this code be improved? Yes it can: in line A, we are unwrapping a Promise via await, only to re-wrap it immediately via return. If we omit await, we don’t even need an async arrow function:
+```
+async function downloadContent(urls) {
+  const promiseArray = urls.map(
+    url => httpGet(url));
+  return await Promise.all(promiseArray); // (B)
+}
+```
+**For the same reason, we can also omit await in line B.**
