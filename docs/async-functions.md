@@ -60,3 +60,33 @@ console.log('Task ends'); // (C)
 // 'Task ends'
 // 'Resolved: abc'
 ```
+
+await: working with Promises 
+
+The await operator can only be used inside async functions and async generators (which are explained in §42.2 “Asynchronous generators”). Its operand is usually a Promise and leads to the following steps being performed:
+
+The current async function is paused and returned from. This step is similar to how yield works in sync generators.
+Eventually, the current task is finished and processing of the task queue continues.
+When and if the Promise is settled, the async function is resumed in a new task:
+If the Promise is fulfilled, await returns the fulfillment value.
+If the Promise is rejected, await throws the rejection value.
+Read on to find out more about how await handles Promises in various states.
+
+## await and fulfilled Promises 
+
+> If its operand ends up being a fulfilled Promise, await returns its fulfillment value:
+`assert.equal(await Promise.resolve('yes!'), 'yes!');`
+
+> Non-Promise values are allowed, too, and simply passed on (synchronously, without pausing the async function):
+`assert.equal(await 'yes!', 'yes!');`
+
+## await and rejected Promises 
+If its operand is a rejected Promise, then await throws the rejection value:
+```
+try {
+  await Promise.reject(new Error());
+  assert.fail(); // we never get here
+} catch (e) {
+  assert.equal(e instanceof Error, true);
+}
+```
